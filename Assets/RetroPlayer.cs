@@ -6,6 +6,8 @@ public class RetroPlayer : MonoBehaviour {
 	[SerializeField] private KeyCode jumpLeft;
 	[SerializeField] private KeyCode jumpRight;
 
+	[SerializeField] private AudioSource jumpAudioSource;
+
 	private Rigidbody2D rigidbody;
 	private HingeJoint2D hingeJoint;
 	private int specialPowerDuration = 5;
@@ -21,10 +23,20 @@ public class RetroPlayer : MonoBehaviour {
 			return;
 		}
 		if (Input.GetKeyDown (jumpLeft)) {
-			rigidbody.AddForce (new Vector2 (-100f, 100f), ForceMode2D.Impulse);
+			Jump (-100f);
 		} else if (Input.GetKeyDown (jumpRight)) {
-			rigidbody.AddForce (new Vector2 (100f, 100f), ForceMode2D.Impulse);
+			Jump (100f);
 		}
+	}
+
+	void Jump(float dir) {
+		rigidbody.AddForce (new Vector2 (dir, 100f), ForceMode2D.Impulse);
+		PlayJumpSound ();
+	}
+
+	void PlayJumpSound() {
+		jumpAudioSource.pitch = 0.7f + Random.value / 2f;
+		jumpAudioSource.Play ();
 	}
 
 	void OnTriggerEnter2D(Collider2D other) {

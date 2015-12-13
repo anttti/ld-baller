@@ -14,7 +14,14 @@ public class GameManager : MonoBehaviour {
 	[SerializeField] private GameObject player1;
 	[SerializeField] private GameObject player2;
 
-	private const int SCORE_LIMIT = 1;
+	[SerializeField] private AudioSource musicAudioSource;
+	[SerializeField] private AudioClip introLoop;
+	[SerializeField] private AudioClip mainLoop;
+
+	[SerializeField] private AudioSource hitAudioSource;
+	[SerializeField] private AudioSource powerupAudioSource;
+
+	private const int SCORE_LIMIT = 5;
 
 	private int player1Score = 0;
 	private int player2Score = 0;
@@ -31,9 +38,20 @@ public class GameManager : MonoBehaviour {
 		winnerText.text = "Baller!";
 	}
 
+	void PlayHitSound() {
+		hitAudioSource.pitch = 0.7f + Random.value / 2f;
+		hitAudioSource.Play ();
+	}
+
+	void PlayPowerupSound() {
+		powerupAudioSource.pitch = 0.7f + Random.value / 2f;
+		powerupAudioSource.Play ();
+	}
+
 	void OnBonusDestroy() {
 		nextBonusTime = Time.time + (float)Random.Range (1, 5);
 		shouldCreateBonus = true;
+		PlayPowerupSound ();
 	}
 
 	void Update() {
@@ -48,10 +66,13 @@ public class GameManager : MonoBehaviour {
 	}
 
 	void StartGame() {
+		musicAudioSource.clip = mainLoop;
+		musicAudioSource.Play ();
 		player1Score = 0;
 		player2Score = 0;
 		UpdateScores ();
 		currentBall = Instantiate (ball, ballSpawnPoint.transform.position, Quaternion.identity) as GameObject;
+		currentBall.SendMessage ("SetGameManager", gameObject);
 		winnerText.enabled = false;
 		guideText.enabled = false;
 		isGameOngoing = true;
@@ -61,6 +82,8 @@ public class GameManager : MonoBehaviour {
 	}
 
 	void EndGame() {
+		musicAudioSource.clip = introLoop;
+		musicAudioSource.Play ();
 		Destroy (currentBall);
 		isGameOngoing = false;
 		if (player1Score >= SCORE_LIMIT) {
