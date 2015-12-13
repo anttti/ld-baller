@@ -21,6 +21,7 @@ public class RetroPlayer : MonoBehaviour {
 	private GameObject ball;
 	private float currentJumpForce = 0;
 	private bool isCharging = false;
+	private float hitForce = 40f;
 
 	void Awake () {
 		rigidbody = GetComponent<Rigidbody2D> ();
@@ -63,7 +64,7 @@ public class RetroPlayer : MonoBehaviour {
 		}
 
 		if (Input.GetKeyDown (punch)) {
-			float force = playerNumber == 1 ? 20f : -20f;
+			float force = playerNumber == 1 ? hitForce : -hitForce;
 			handRigidbody.AddForceAtPosition (new Vector2 (force, force), new Vector2 (0, 0), ForceMode2D.Impulse);
 		}
 	}
@@ -110,18 +111,21 @@ public class RetroPlayer : MonoBehaviour {
 	{
 		transform.localScale = new Vector3 (2, 2, 1);
 		gameManager.SendMessage ("UpdateMode", "HUGE MODE");
+		hitForce = 120f;
 		Invoke("RemoveSpecialPowers", specialPowerDuration);
 	}
 
 	void SpecialPowerShrink() {
 		transform.localScale = new Vector3 (0.5f, 0.5f, 1);
 		gameManager.SendMessage ("UpdateMode", "TINY MODE");
+		hitForce = 120f;
 		Invoke("RemoveSpecialPowers", specialPowerDuration);
 	}
 
 	void SpecialPowerFat() {
-		transform.localScale = new Vector3 (2.5f, 1, 1);
+		transform.localScale = new Vector3 (2f, 1, 1);
 		gameManager.SendMessage ("UpdateMode", "FATZO MODE");
+		hitForce = 80f;
 		Invoke("RemoveSpecialPowers", specialPowerDuration);
 	}
 
@@ -136,6 +140,7 @@ public class RetroPlayer : MonoBehaviour {
 		if (isMovementDisabled) {
 			return;
 		}
+		hitForce = 40f;
 		transform.localScale = new Vector3 (1, 1, 1);
 		hingeJoint.useMotor = false;
 	}

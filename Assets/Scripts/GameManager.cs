@@ -14,6 +14,8 @@ public class GameManager : MonoBehaviour {
 	[SerializeField] private Text modeText;
 	[SerializeField] private Text player1ChargeText;
 	[SerializeField] private Text player2ChargeText;
+	[SerializeField] private Text buttons1Text;
+	[SerializeField] private Text buttons2Text;
 	[SerializeField] private GameObject player1;
 	[SerializeField] private GameObject player2;
 
@@ -75,6 +77,9 @@ public class GameManager : MonoBehaviour {
 	}
 
 	void Update() {
+		if (Input.GetKeyUp (KeyCode.Escape)) {
+			Application.Quit ();
+		}
 		if (!isGameOngoing && Input.anyKeyDown && isNextRoundAbleToStart) {
 			StartGame ();
 		}
@@ -101,6 +106,8 @@ public class GameManager : MonoBehaviour {
 		player2.SendMessage ("EnableMovement");
 		player1.SendMessage ("SetBall", currentBall);
 		player2.SendMessage ("SetBall", currentBall);
+		buttons1Text.enabled = false;
+		buttons2Text.enabled = false;
 	}
 
 	void EndGame() {
