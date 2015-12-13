@@ -9,6 +9,7 @@ public class RetroPlayer : MonoBehaviour {
 	private Rigidbody2D rigidbody;
 	private HingeJoint2D hingeJoint;
 	private int specialPowerDuration = 5;
+	private bool isMovementDisabled = false;
 
 	void Awake () {
 		rigidbody = GetComponent<Rigidbody2D> ();
@@ -16,6 +17,9 @@ public class RetroPlayer : MonoBehaviour {
 	}
 
 	void Update () {
+		if (isMovementDisabled) {
+			return;
+		}
 		if (Input.GetKeyDown (jumpLeft)) {
 			rigidbody.AddForce (new Vector2 (-100f, 100f), ForceMode2D.Impulse);
 		} else if (Input.GetKeyDown (jumpRight)) {
@@ -60,17 +64,30 @@ public class RetroPlayer : MonoBehaviour {
 	}
 
 	void SpecialPowerMayhem() {
-		JointMotor2D motor = hingeJoint.motor;
-		motor.motorSpeed = 3000;
-		hingeJoint.motor = motor;
+		SetMotorSpeed (3000);
 		Invoke("RemoveSpecialPowers", specialPowerDuration);
 	}
 
 	void RemoveSpecialPowers() {
-		Debug.Log ("Removing SPECIAL POWERS!");
+		if (isMovementDisabled) {
+			return;
+		}
 		transform.localScale = new Vector3 (1, 1, 1);
+		SetMotorSpeed (800);
+	}
+
+	void EnableMovement() {
+		SetMotorSpeed (800);
+	}
+
+	void DisableMovement() {
+		isMovementDisabled = true;
+		SetMotorSpeed (0);
+	}
+
+	void SetMotorSpeed(int speed) {
 		JointMotor2D motor = hingeJoint.motor;
-		motor.motorSpeed = 800;
+		motor.motorSpeed = speed;
 		hingeJoint.motor = motor;
 	}
 }

@@ -7,6 +7,8 @@ public class HoopScoreDetector : MonoBehaviour {
 	[SerializeField] private int playerToScoreNumber;
 
 	void OnTriggerEnter2D(Collider2D other) {
-		gameManager.SendMessage ("ScorePointForPlayer", playerToScoreNumber);
+		if (other.tag == "Ball") {
+			gameManager.SendMessage ("ScorePointForPlayer", playerToScoreNumber);
+		}
 	}
 }
