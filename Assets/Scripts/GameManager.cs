@@ -11,6 +11,8 @@ public class GameManager : MonoBehaviour {
 	[SerializeField] private Text scoreText;
 	[SerializeField] private Text winnerText;
 	[SerializeField] private Text guideText;
+	[SerializeField] private Text player1ChargeText;
+	[SerializeField] private Text player2ChargeText;
 	[SerializeField] private GameObject player1;
 	[SerializeField] private GameObject player2;
 
@@ -54,6 +56,14 @@ public class GameManager : MonoBehaviour {
 		PlayPowerupSound ();
 	}
 
+	void UpdatePlayer1Charge(float currentCharge) {
+		player1ChargeText.text = currentCharge.ToString();
+	}
+
+	void UpdatePlayer2Charge(float currentCharge) {
+		player2ChargeText.text = currentCharge.ToString();
+	}
+
 	void Update() {
 		if (!isGameOngoing && Input.anyKeyDown && isNextRoundAbleToStart) {
 			StartGame ();
@@ -79,6 +89,8 @@ public class GameManager : MonoBehaviour {
 		isNextRoundAbleToStart = false;
 		player1.SendMessage ("EnableMovement");
 		player2.SendMessage ("EnableMovement");
+		player1.SendMessage ("SetBall", currentBall);
+		player2.SendMessage ("SetBall", currentBall);
 	}
 
 	void EndGame() {
