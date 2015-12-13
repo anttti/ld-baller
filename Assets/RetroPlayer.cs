@@ -109,25 +109,30 @@ public class RetroPlayer : MonoBehaviour {
 	void SpecialPowerGrow()
 	{
 		transform.localScale = new Vector3 (2, 2, 1);
+		gameManager.SendMessage ("UpdateMode", "HUGE MODE");
 		Invoke("RemoveSpecialPowers", specialPowerDuration);
 	}
 
 	void SpecialPowerShrink() {
 		transform.localScale = new Vector3 (0.5f, 0.5f, 1);
+		gameManager.SendMessage ("UpdateMode", "TINY MODE");
 		Invoke("RemoveSpecialPowers", specialPowerDuration);
 	}
 
 	void SpecialPowerFat() {
 		transform.localScale = new Vector3 (2.5f, 1, 1);
+		gameManager.SendMessage ("UpdateMode", "FATZO MODE");
 		Invoke("RemoveSpecialPowers", specialPowerDuration);
 	}
 
 	void SpecialPowerMayhem() {
 		SetMotorSpeed (1800);
+		gameManager.SendMessage ("UpdateMode", "MAYHEM!!1");
 		Invoke("RemoveSpecialPowers", specialPowerDuration);
 	}
 
 	void RemoveSpecialPowers() {
+		gameManager.SendMessage ("UpdateMode", "");
 		if (isMovementDisabled) {
 			return;
 		}
@@ -137,11 +142,11 @@ public class RetroPlayer : MonoBehaviour {
 
 	void EnableMovement() {
 		currentJumpForce = 0;
+		isMovementDisabled = false;
 	}
 
 	void DisableMovement() {
 		isMovementDisabled = true;
-		//SetMotorSpeed (0);
 		hingeJoint.useMotor = false;
 	}
 

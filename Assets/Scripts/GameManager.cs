@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour {
 	[SerializeField] private Text scoreText;
 	[SerializeField] private Text winnerText;
 	[SerializeField] private Text guideText;
+	[SerializeField] private Text modeText;
 	[SerializeField] private Text player1ChargeText;
 	[SerializeField] private Text player2ChargeText;
 	[SerializeField] private GameObject player1;
@@ -51,7 +52,7 @@ public class GameManager : MonoBehaviour {
 	}
 
 	void OnBonusDestroy() {
-		nextBonusTime = Time.time + (float)Random.Range (1, 5);
+		nextBonusTime = Time.time + (float)Random.Range (4, 8);
 		shouldCreateBonus = true;
 		PlayPowerupSound ();
 	}
@@ -62,6 +63,15 @@ public class GameManager : MonoBehaviour {
 
 	void UpdatePlayer2Charge(float currentCharge) {
 		player2ChargeText.text = "Charge: " + ((int)currentCharge).ToString();
+	}
+
+	void UpdateMode(string mode) {
+		if (mode == "") {
+			modeText.enabled = false;
+			return;
+		}
+		modeText.text = mode;
+		modeText.enabled = true;
 	}
 
 	void Update() {

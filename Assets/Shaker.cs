@@ -2,12 +2,11 @@
 using System.Collections;
 
 public class Shaker : MonoBehaviour {
-	Vector3 originalCameraPosition;
+	Vector3 originalCameraPosition = new Vector3(15.67f, 7.8f, -10f);
 
 	float shakeAmt = 0;
 
 	void OnCollisionEnter2D(Collision2D coll) {
-		originalCameraPosition = Camera.main.transform.position;
 		shakeAmt = coll.relativeVelocity.magnitude * .0025f;
 		InvokeRepeating("CameraShake", 0, .01f);
 		Invoke("StopShaking", 0.3f);
