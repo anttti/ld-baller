@@ -57,11 +57,11 @@ public class GameManager : MonoBehaviour {
 	}
 
 	void UpdatePlayer1Charge(float currentCharge) {
-		player1ChargeText.text = currentCharge.ToString();
+		player1ChargeText.text = "Charge: " + ((int)currentCharge).ToString();
 	}
 
 	void UpdatePlayer2Charge(float currentCharge) {
-		player2ChargeText.text = currentCharge.ToString();
+		player2ChargeText.text = "Charge: " + ((int)currentCharge).ToString();
 	}
 
 	void Update() {

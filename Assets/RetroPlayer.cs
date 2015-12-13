@@ -3,8 +3,8 @@ using System.Collections;
 
 public class RetroPlayer : MonoBehaviour {
 
-	[SerializeField] private KeyCode jumpLeft;
-	[SerializeField] private KeyCode jumpRight;
+	[SerializeField] private KeyCode jump;
+	[SerializeField] private KeyCode punch;
 	[SerializeField] private AudioSource jumpAudioSource;
 	[SerializeField] private GameObject gameManager;
 	[SerializeField] private int playerNumber;
@@ -47,27 +47,32 @@ public class RetroPlayer : MonoBehaviour {
 			rigidbody.AddForce (new Vector2 (100f, 0));
 		}
 
-		if (!isCharging && Input.GetKeyDown (jumpLeft)) {
+		if (!isCharging && Input.GetKeyDown (jump)) {
 			currentJumpForce = 0;
 			isCharging = true;
 		}
 		if (isCharging) {
 			float delta = Time.deltaTime * JUMP_FORCE_CHARGE_SPEED;
 			currentJumpForce = Mathf.Clamp (currentJumpForce + delta, currentJumpForce, MAX_JUMP_FORCE);
-
-			if (playerNumber == 1) {
-				gameManager.SendMessage ("UpdatePlayer1Charge", currentJumpForce);
-			} else {
-				gameManager.SendMessage ("UpdatePlayer2Charge", currentJumpForce);
-			}
+			UpdateCharge (currentJumpForce);
 		}
-		if (isCharging && Input.GetKeyUp (jumpLeft)) {
+		if (isCharging && Input.GetKeyUp (jump)) {
 			rigidbody.AddForce (new Vector2 (0, currentJumpForce * 12), ForceMode2D.Impulse);
 			isCharging = false;
+			UpdateCharge (0f);
 		}
 
-		if (Input.GetKeyDown (jumpRight)) {
-			handRigidbody.AddForceAtPosition (new Vector2 (20f, 20f), new Vector2 (0, 0), ForceMode2D.Impulse);
+		if (Input.GetKeyDown (punch)) {
+			float force = playerNumber == 1 ? 20f : -20f;
+			handRigidbody.AddForceAtPosition (new Vector2 (force, force), new Vector2 (0, 0), ForceMode2D.Impulse);
+		}
+	}
+
+	void UpdateCharge(float charge) {
+		if (playerNumber == 1) {
+			gameManager.SendMessage ("UpdatePlayer1Charge", charge);
+		} else {
+			gameManager.SendMessage ("UpdatePlayer2Charge", charge);
 		}
 	}
 
@@ -82,7 +87,7 @@ public class RetroPlayer : MonoBehaviour {
 	}
 
 	void OnTriggerEnter2D(Collider2D other) {
-		if (other.tag == "aBonus") {
+		if (other.tag == "Bonus") {
 			int random = Random.Range (0, 4);
 			switch (random) {
 			case 0:
@@ -118,7 +123,7 @@ public class RetroPlayer : MonoBehaviour {
 	}
 
 	void SpecialPowerMayhem() {
-		//SetMotorSpeed (3000);
+		SetMotorSpeed (1800);
 		Invoke("RemoveSpecialPowers", specialPowerDuration);
 	}
 
@@ -127,22 +132,23 @@ public class RetroPlayer : MonoBehaviour {
 			return;
 		}
 		transform.localScale = new Vector3 (1, 1, 1);
-		//SetMotorSpeed (800);
+		hingeJoint.useMotor = false;
 	}
 
 	void EnableMovement() {
 		currentJumpForce = 0;
-		//SetMotorSpeed (800);
 	}
 
 	void DisableMovement() {
 		isMovementDisabled = true;
-		SetMotorSpeed (0);
+		//SetMotorSpeed (0);
+		hingeJoint.useMotor = false;
 	}
 
 	void SetMotorSpeed(int speed) {
 		JointMotor2D motor = hingeJoint.motor;
 		motor.motorSpeed = speed;
 		hingeJoint.motor = motor;
+		hingeJoint.useMotor = true;
 	}
 }
